@@ -6,20 +6,14 @@ url: require("url")
 exports.routes: {}
 
 exports.get: ->
-  if typeof arguments[arguments.length-1] is "function"
-    process: arguments.pop()
 
   path: arguments[0]
-  if arguments.length is 1
-    file: path.substring(1)
-  else
-    file: arguments[1]
+  file: arguments[1]()
 
   exports.routes[path] ||= {}
   exports.routes[path].GET: ->
     fs.readFileSync file
-  exports.routes[path].process: process if process?
- 
+
 exports.error: (res) ->
   res.writeHead 404, {'Content-Type': 'text/html'}
   res.write "No route matched."
@@ -31,31 +25,22 @@ http.createServer((req, res) ->
     types: {
       css : "text/css"
       html: "text/html"
-      js  : "text/javascript"
-    }
+      js  : "text/javascript" }
 
     extension: path.match(/(.*)\.(.+)/)
-    if extension?
-      contentType: types[extension[2]] 
+    contentType: if extension? then types[extension[2]] else types.html
+
+    file: exports.routes[path].GET
+    if file?
+      res.writeHead 200, {'Content-Type': contentType}
+      res.write file()
     else
-      contentType: "text/html"
-      
-    deliver: ->
-      file: exports.routes[path].GET
-      if file?
-        res.writeHead 200, {'Content-Type': contentType}
-        res.write file()
-      else
-        exports.error(res)
-      sys.puts path
-      res.close()
-      
-    if exports.routes[path].process?
-      exports.routes[path].process {deliver: deliver}
-    else
-      deliver()
+      exports.error(res)
+    sys.puts path
+    res.end()
   else
     exports.error(res)
-    res.close()
+    res.end()
 ).listen 5678, 'localhost'
+
 sys.puts "Listening on port 5678"
