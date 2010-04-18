@@ -7,8 +7,6 @@ app.error: (res) ->
 
 app.get '/', -> 'index.html'
 
-app.get '/stylesheets/main.css', -> 'lib/main.css'
+app.get /([^\/.]*)\.(css|js)/, -> "lib/${@[0]}.${@[1]}"
 
-app.get '/javascripts/jquery.js', -> 'lib/jquery.js'
-
-app.get '/javascripts/coffee-script.js', -> 'lib/coffee-script.js'
+app.get /\/pages\/([^\/.]*)\.html/, -> "content/${@[0]}.html"

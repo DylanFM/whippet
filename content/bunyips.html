@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en-au">
+<head>
+<title>Bunyips</title>
+
+<link rel="stylesheet" href="stylesheets/main.css" type="text/css" media="screen, projector">
+
+</head>
+<body>
+    <h1>About bunyips</h1>
+    <p>They have wings.</p>
+
+    <script src="javascripts/jquery.js"></script>
+    <script src="javascripts/coffee-script.js"></script>
+    <script type="text/coffeescript">
+        puts: (msg) -> $("<p/>").text(msg).appendTo(document.body)
+        $ ->
+          puts "Coffee-Script in full effect."
+    </script>
+</body>
+</html>
+

@@ -5,40 +5,57 @@ url: require("url")
 
 exports.routes: {}
 
-exports.get: ->
+exports.get: (path, callback) ->
 
-  path: arguments[0]
-  file: arguments[1]()
-
-  exports.routes[path] ||= {}
-  exports.routes[path].GET: ->
-    fs.readFileSync file
+  exports.routes[path] ||= {
+    callback: callback,
+    regexp: path
+  }
 
 exports.error: (res) ->
   res.writeHead 404, {'Content-Type': 'text/html'}
   res.write "No route matched."
 
+# Create the server
 http.createServer((req, res) ->
-  path: url.parse(req.url).pathname
-  if path in exports.routes
 
-    types: {
-      css : "text/css"
-      html: "text/html"
-      js  : "text/javascript" }
+  try
+    path: url.parse(req.url).pathname
+    segments: []
+    filepath: ""
 
-    extension: path.match(/(.*)\.(.+)/)
-    contentType: if extension? then types[extension[2]] else types.html
-
-    file: exports.routes[path].GET
-    if file?
-      res.writeHead 200, {'Content-Type': contentType}
-      res.write file()
+    if path in exports.routes
+      filepath: exports.routes[path].callback()
     else
-      exports.error(res)
-    sys.puts path
-    res.end()
-  else
+      for route, info of exports.routes
+        if typeof(info.regexp) is "function"
+          segments: path.match(info.regexp)
+          if segments?
+            segments.shift()
+            filepath: exports.routes[route].callback.apply(segments)
+
+    if filepath
+
+      file: fs.readFileSync filepath
+
+      types: {
+        css : "text/css"
+        html: "text/html"
+        js  : "text/javascript" }
+
+      extension: filepath.match(/(.*)\.(.+)/)
+      contentType: if extension? then types[extension[2]] else types.html
+
+      if file?
+        res.writeHead 200, {'Content-Type': contentType}
+        res.write file
+      else
+        exports.error(res)
+      sys.puts "Requested: ${path}; serving: ${filepath}"
+      res.end()
+    else
+      throw new Error "404"
+  catch e
     exports.error(res)
     res.end()
 ).listen 5678, 'localhost'
