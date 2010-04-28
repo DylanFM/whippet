@@ -2,11 +2,9 @@ sys: require("sys")
 
 app: require("./vendor/whippet")
 
-app.error: (res) ->
-  res.writeHead 404, {'Content-Type': 'text/html'}
-  res.write "Custom error: no route matched."
-
 app.get '/', -> 'index.html'
+
+app.get '/image.jpg', -> 'image.jpg'
 
 app.get /([^\/.]*)\.(css|js)/, -> "lib/${@[0]}.${@[1]}"
 

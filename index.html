@@ -2,18 +2,21 @@
 <html lang="en-au">
 <head>
     <title>Whippet: lean and fast.</title>
-    <link rel="stylesheet" href="main.css" type="text/css" media="screen, projector">
+    <link rel="stylesheet" href="/main.css" type="text/css" media="screen, projector">
 </head>
 <body>
-    <h1>Whippet: lean and fast.</h1>
-    <h2>Coffee-Script and Node together, like they should be</h2>
-    <script src="jquery.js"></script>
-    <script src="coffee-script.js"></script>
-    <script type="text/coffeescript">
-        puts: (msg) -> $("<p/>").text(msg).appendTo(document.body)
-        $ ->
-           puts "Coffee-Script in full effect."
-    </script>
+  <a href="/" title="Go home" rel="home">Home</a>
+  <a href="/pages/birds.html" title="Flutter by, little birdies">Birds</a>
+  <a href="/pages/bunyips.html" title="The Bunyip's very scary">Bunyips</a>
+  <h1>Whippet: lean and fast.</h1>
+  <h2>Coffee-Script and Node together, like they should be</h2>
+  <img src="/image.jpg">
+  <script src="/jquery.js"></script>
+  <script src="/coffee-script.js"></script>
+  <script type="text/coffeescript">
+    $ ->
+      $("<p>Coffee-Script in full effect.</p>").hide().appendTo("body").fadeIn();
+  </script>
 </body>
 </html>
 
