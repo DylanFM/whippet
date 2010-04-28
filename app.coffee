@@ -1,5 +1,6 @@
 sys: require("sys")
-app: require("./vendor/call")
+
+app: require("./vendor/whippet")
 
 app.error: (res) ->
   res.writeHead 404, {'Content-Type': 'text/html'}
