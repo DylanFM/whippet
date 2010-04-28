@@ -2,10 +2,13 @@ sys: require("sys")
 app: require("./vendor/whippet")
 
 # Set up routing
-app.get '/', -> 'index.html'
+app.get "/", -> "index.html"
 app.get /\/pages\/([^\/.]*)\.html/, -> "content/${@[0]}.html"
 
-app.get /([^\/.]*)\.css/, -> "stylesheets/${@[0]}.css"
-app.get /([^\/.]*)\.js/, -> "javascripts/${@[0]}.js"
+app.get /([^\/.]*)\.(css|js)/, ->
+  file: @[0]
+  ext: @[1]
+  path: if ext is "css" then "stylesheets" else "javascripts"
+  "${path}/${file}.${ext}"
 
-app.get '/image.jpg', -> 'image.jpg'
+app.get /([^\/.]*)\.jpg/, -> "images/${@[0]}.jpg"
